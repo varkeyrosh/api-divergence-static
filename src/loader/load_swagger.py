@@ -1,31 +1,75 @@
 import json
 import yaml
+import requests
 from pathlib import Path
 
-def load_swagger(file_path: str) -> dict:
+def load_swagger(source: str) -> dict:
     """
-    Load OpenAPI/Swagger spec from JSON or YAML.
-
-    Args:
-        file_path (str): Path to the swagger file
-
-    Returns:
-        dict: Parsed Swagger as Python dictionary
+    Load Swagger spec from:
+    - Local file
+    - URL
+    - GitHub repo (auto-scans recursively for swagger/openapi files)
     """
 
-    file = Path(file_path)
+    def is_valid_swagger(content: str):
+        """Basic check to ensure file contains Swagger or OpenAPI structure."""
+        return any(key in content for key in ["openapi", "swagger", "paths"])
 
-    if not file.exists():
-        raise FileNotFoundError(f"Swagger file not found: {file_path}")
+    # Case 1: Hosted Swagger file (URL)
+    if source.startswith("http://") or source.startswith("https://"):
+        response = requests.get(source)
+        response.raise_for_status()
+        text = response.text
 
-    # Parse JSON
-    if file.suffix in [".json"]:
-        with open(file, "r", encoding="utf-8") as f:
-            return json.load(f)
+        if not is_valid_swagger(text):
+            raise ValueError(f"URL does not appear to be a valid Swagger file: {source}")
 
-    # Parse YAML
-    if file.suffix in [".yaml", ".yml"]:
-        with open(file, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
+        try:
+            return response.json()
+        except Exception:
+            return yaml.safe_load(text)
 
-    raise ValueError("Unsupported Swagger file format. Use .json or .yaml")
+    # Case 2: GitHub repository (auto-scan)
+    if "github.com" in source:
+        if source.endswith(".git"):
+            source = source[:-4]
+
+        # Convert to GitHub API path
+        api_url = source.replace("github.com", "api.github.com/repos") + "/contents"
+        print(f"Scanning GitHub repo for Swagger files: {api_url}")
+
+        def recursive_scan(api_url):
+            response = requests.get(api_url)
+            response.raise_for_status()
+            for item in response.json():
+                if item["type"] == "file" and item["name"].lower().endswith((".json", ".yaml", ".yml")):
+                    file_resp = requests.get(item["download_url"])
+                    content = file_resp.text
+                    if is_valid_swagger(content):
+                        print(f"✅ Found Swagger file: {item['path']}")
+                        try:
+                            return json.loads(content)
+                        except Exception:
+                            return yaml.safe_load(content)
+                elif item["type"] == "dir":
+                    sub = recursive_scan(item["url"])
+                    if sub:
+                        return sub
+            return None
+
+        result = recursive_scan(api_url)
+        if not result:
+            raise ValueError("No valid Swagger file found in GitHub repo.")
+        return result
+
+    # Case 3: Local file
+    file = Path(source)
+    if file.exists():
+        text = file.read_text(encoding="utf-8")
+        if not is_valid_swagger(text):
+            raise ValueError(f"File {source} does not appear to contain a valid Swagger spec.")
+        if source.endswith(".json"):
+            return json.loads(text)
+        return yaml.safe_load(text)
+
+    raise ValueError(f"Swagger file not found or unsupported format: {source}")
