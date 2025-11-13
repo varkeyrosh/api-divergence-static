@@ -80,7 +80,7 @@ def extract_routes_ai(folder_path: str) -> list:
     {all_files}
     """
 
-    model = genai.GenerativeModel("gemini-pro")
+    model = genai.GenerativeModel("gemini-2.5-flash")
     response = model.generate_content(prompt)
 
     try:

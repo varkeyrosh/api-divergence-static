@@ -1,0 +1,29 @@
+[
+    {
+        "endpoint": "/hello",
+        "method": "GET",
+        "purpose": "Verify the expected endpoint 'GET /hello' is missing from the API.",
+        "steps": [
+            "Send GET request to /hello",
+            "Expect status 404 Not Found"
+        ]
+    },
+    {
+        "endpoint": "/compare",
+        "method": "POST",
+        "purpose": "Verify the existence of the unexpected endpoint 'POST /compare' in the API.",
+        "steps": [
+            "Send POST request to /compare",
+            "Expect a non-404 HTTP status code (e.g., 200 OK, 400 Bad Request, 500 Internal Server Error) confirming the endpoint is active and reachable."
+        ]
+    },
+    {
+        "endpoint": "/webhook/github",
+        "method": "POST",
+        "purpose": "Verify the existence of the unexpected endpoint 'POST /webhook/github' in the API.",
+        "steps": [
+            "Send POST request to /webhook/github",
+            "Expect a non-404 HTTP status code (e.g., 200 OK, 400 Bad Request, 500 Internal Server Error) confirming the endpoint is active and reachable."
+        ]
+    }
+]

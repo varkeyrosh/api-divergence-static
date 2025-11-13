@@ -45,7 +45,7 @@ def compare_api_contract(swagger_spec: dict, backend_routes: list) -> dict:
     {json.dumps(backend_routes, indent=2)}
     """
 
-    model = genai.GenerativeModel("gemini-pro")
+    model = genai.GenerativeModel("models/gemini-2.5-flash")
     response = model.generate_content(prompt)
 
     try:

@@ -1,0 +1,11 @@
+{
+    "missing_endpoints": [
+        "GET /hello"
+    ],
+    "extra_endpoints": [],
+    "method_mismatches": [],
+    "parameter_mismatches": [],
+    "request_body_mismatches": [],
+    "response_mismatches": [],
+    "status_code_mismatches": []
+}

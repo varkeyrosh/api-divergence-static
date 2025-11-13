@@ -1,0 +1,6 @@
+[
+    {
+        "error": "Model output not JSON",
+        "raw": "```json\n[\n  {\n    \"endpoint\": \"/hello\",\n    \"method\": \"GET\",\n    \"purpose\": \"Validate that a documented but missing endpoint returns 404 Not Found.\",\n    \"steps\": [\n      \"Send a GET request to /hello\",\n      \"Expect 404 Not Found status code\"\n    ]\n  }\n]\n```"
+    }
+]

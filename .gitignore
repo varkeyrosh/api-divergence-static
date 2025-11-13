@@ -1,18 +1,62 @@
-# ---- Local test & debug files ----
-test_gemini.py
-*.log
+# ===== Python =====
 __pycache__/
-*.pyc
-
-# ---- Environment & credentials ----
-.env
-*.env
-venv/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pdb
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
 .venv/
-.env.local
+venv/
+env/
+ENV/
+pip-wheel-metadata/
 
-# ---- OS & IDE files ----
-.DS_Store
-Thumbs.db
+# ===== Virtual environments =====
+*.env
+*.venv
+.env.*
+.envrc
 .vscode/
 .idea/
+
+# ===== FastAPI / Uvicorn =====
+*.log
+*.sqlite3
+*.db
+instance/
+.coverage
+htmlcov/
+.cache/
+pytest_cache/
+
+# ===== Jupyter / Notebooks =====
+.ipynb_checkpoints/
+*.ipynb
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===== Testing / Temp =====
+test_*.py
+tests/__pycache__/
+tmp/
+temp/
+sandbox/
+logs/
+
+# ===== AI / Gemini =====
+test_gemini.py
+*.api_key
+*gemini_key*
+*google_api_key*
+*config_local.json
+
+# ===== Git =====
+.gitignore

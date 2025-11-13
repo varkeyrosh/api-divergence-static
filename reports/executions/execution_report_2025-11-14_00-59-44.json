@@ -1,0 +1,20 @@
+[
+    {
+        "endpoint": "/hello",
+        "method": "GET",
+        "status": "PASS",
+        "details": "Expected: 404, Got: 404"
+    },
+    {
+        "endpoint": "/compare",
+        "method": "POST",
+        "status": "FAIL",
+        "details": "Expected: 404, Got: 500"
+    },
+    {
+        "endpoint": "/webhook/github",
+        "method": "POST",
+        "status": "PASS",
+        "details": "Expected: 404, Got: 404"
+    }
+]
