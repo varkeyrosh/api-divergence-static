@@ -1,0 +1,43 @@
+name: API Divergence CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  divergence-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+          sudo apt-get install -y nodejs
+          sudo npm install -g newman
+
+      - name: Run compare (server must be run in background)
+        run: |
+          uvicorn api.server:app --port 8000 &
+          sleep 4
+          python -c "import requests, json; print(requests.post('http://127.0.0.1:8000/compare', json={'git_repo':'https://github.com/${{ github.repository }}','swagger_source':'swagger/test.json'}).json())"
+
+      - name: Find generated postman collection
+        id: find
+        run: |
+          COLLECTION=$(ls reports/postman/*.json | head -n 1)
+          echo "collection=$COLLECTION" >> $GITHUB_OUTPUT
+
+      - name: Run Newman (Postman collection)
+        run: |
+          newman run ${{ steps.find.outputs.collection }} --reporters cli,junit --reporter-junit-export reports/junit/newman-report.xml

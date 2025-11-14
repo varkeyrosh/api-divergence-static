@@ -1,0 +1,29 @@
+[
+    {
+        "endpoint": "/hello",
+        "method": "GET",
+        "purpose": "Verify a GET request to a reported missing endpoint returns 404 Not Found.",
+        "steps": [
+            "Send GET request to /hello",
+            "Expect status 404 Not Found"
+        ]
+    },
+    {
+        "endpoint": "/compare",
+        "method": "POST",
+        "purpose": "Verify the reported extra POST endpoint /compare is accessible and returns a success status.",
+        "steps": [
+            "Send POST request to /compare with an empty JSON body {}",
+            "Expect a successful status code (2xx)"
+        ]
+    },
+    {
+        "endpoint": "/webhook/github",
+        "method": "POST",
+        "purpose": "Verify the reported extra POST endpoint /webhook/github is accessible and returns a success status.",
+        "steps": [
+            "Send POST request to /webhook/github with an empty JSON body {}",
+            "Expect a successful status code (2xx)"
+        ]
+    }
+]
